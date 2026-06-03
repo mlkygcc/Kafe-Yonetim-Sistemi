@@ -2,7 +2,7 @@
 
 Bu proje, mikroservis mimarisi (FastAPI + RabbitMQ), dinamik yetkilendirme (RBAC), yapay zeka (RAG) ve gerçek zamanlı sipariş takibi özelliklerini barındıran tam teşekküllü bir kafe yönetim sistemidir.
 
-# Proje Tanıtım Videosu
+## Proje Tanıtım Videosu
 Projenin detaylı çalışma senaryosunu buradaki YouTube bağlantısından izleyebilirsiniz:
 https://youtu.be/Po_QW4L6ulM
 
