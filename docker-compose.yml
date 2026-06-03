@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kafe_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: kafe123 
+      MYSQL_DATABASE: adminPanelDb
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: kafe_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  backend:
+    build: ./backend
+    container_name: kafe_backend
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      mysql:
+        condition: service_healthy 
+    restart: always
+    environment:
+      - AQ.Ab8RN6I0BElOhvId8bFKuvL_OQbXpV9EDHzLvsIqOhegxy-dzw
+
+  worker:
+    build: ./backend
+    container_name: kafe_worker
+    command: python log_service.py
+    depends_on:
+      - mysql
+      - rabbitmq
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: kafe_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mysql_data:
